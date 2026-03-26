@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Claude Plans Menu Bar - Mockup</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Text&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    background: #1a1a2e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0;
+    min-height: 100vh;
+  }
+
+  /* ── macOS menu bar ── */
+  .menu-bar {
+    width: 100%;
+    height: 28px;
+    background: linear-gradient(180deg, #3a3a3a 0%, #2d2d2d 100%);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 12px;
+    gap: 18px;
+    border-bottom: 1px solid #1a1a1a;
+    position: relative;
+  }
+
+  .menu-bar-icon {
+    color: #e0e0e0;
+    font-size: 13px;
+    cursor: default;
+    opacity: 0.85;
+  }
+
+  .menu-bar-icon.active {
+    opacity: 1;
+    background: rgba(255,255,255,0.12);
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin: -2px -6px;
+  }
+
+  .menu-bar-time {
+    color: #e0e0e0;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* ── Dropdown ── */
+  .dropdown {
+    position: absolute;
+    top: 36px;
+    right: 160px;
+    width: 380px;
+    background: rgba(40, 40, 45, 0.98);
+    backdrop-filter: blur(30px);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 0.5px rgba(255,255,255,0.05);
+    overflow: hidden;
+    padding: 5px 0;
+  }
+
+  /* ── Plan item ── */
+  .plan-item {
+    padding: 8px 14px;
+    cursor: default;
+    border-radius: 5px;
+    margin: 0 5px;
+    transition: background 0.1s;
+  }
+
+  .plan-item:hover {
+    background: rgba(59, 130, 246, 0.7);
+  }
+
+  .plan-item:hover .plan-name,
+  .plan-item:hover .plan-title,
+  .plan-item:hover .plan-time {
+    color: #fff !important;
+  }
+
+  .plan-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e8e8e8;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .plan-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .plan-title {
+    font-size: 11.5px;
+    color: #9a9a9e;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+  }
+
+  .plan-time {
+    font-size: 11px;
+    color: #6e6e73;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── Separator ── */
+  .separator {
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    margin: 5px 14px;
+  }
+
+  /* ── Configure item ── */
+  .config-item {
+    padding: 6px 14px;
+    cursor: default;
+    border-radius: 5px;
+    margin: 0 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.1s;
+  }
+
+  .config-item:hover {
+    background: rgba(59, 130, 246, 0.7);
+  }
+
+  .config-item:hover .config-text {
+    color: #fff !important;
+  }
+
+  .config-text {
+    font-size: 13px;
+    color: #9a9a9e;
+  }
+
+  .config-icon {
+    font-size: 13px;
+  }
+
+  /* ── Labels ── */
+  .label {
+    position: absolute;
+    font-size: 12px;
+    color: #888;
+    pointer-events: none;
+  }
+
+  /* ── Annotation arrows ── */
+  .annotations {
+    position: relative;
+    width: 820px;
+    margin-top: 40px;
+  }
+
+  .annotation {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+    color: #a0a0b0;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .annotation-number {
+    background: #3b82f6;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .annotation-text {
+    padding-top: 2px;
+  }
+
+  .annotation-text strong {
+    color: #d0d0e0;
+  }
+
+  /* ── Config dialog ── */
+  .config-dialog {
+    position: absolute;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 340px;
+    background: rgba(44, 44, 50, 0.98);
+    backdrop-filter: blur(30px);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    padding: 20px;
+  }
+
+  .config-dialog h3 {
+    color: #e8e8e8;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .config-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .config-label {
+    color: #b0b0b8;
+    font-size: 13px;
+  }
+
+  .config-input {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    color: #e8e8e8;
+    font-size: 13px;
+    padding: 5px 10px;
+    width: 160px;
+    text-align: right;
+  }
+
+  .config-select {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    color: #e8e8e8;
+    font-size: 13px;
+    padding: 5px 10px;
+    width: 160px;
+    text-align: right;
+    appearance: none;
+  }
+
+  .config-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 18px;
+  }
+
+  .config-btn {
+    padding: 5px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    border: none;
+  }
+
+  .config-btn.cancel {
+    background: rgba(255,255,255,0.1);
+    color: #b0b0b8;
+  }
+
+  .config-btn.save {
+    background: #3b82f6;
+    color: white;
+    font-weight: 600;
+  }
+
+  /* ── Layout sections ── */
+  .mockup-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 60px;
+  }
+
+  .section-title {
+    color: #e0e0e0;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 40px 0 12px;
+    text-align: center;
+  }
+
+  .section-subtitle {
+    color: #777;
+    font-size: 13px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .mockup-frame {
+    position: relative;
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- SCREEN 1: Menu bar with dropdown open          -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="mockup-section">
+  <div class="section-title">Screen 1 &mdash; Plans Dropdown (click on menu bar icon)</div>
+  <div class="section-subtitle">Shows up to N most-recently-updated plans, sorted newest first</div>
+
+  <div class="mockup-frame">
+    <!-- Menu bar -->
+    <div class="menu-bar" style="width:820px;">
+      <span class="menu-bar-icon">&#x1F50A;</span>
+      <span class="menu-bar-icon">Wi-Fi</span>
+      <span class="menu-bar-icon active" title="Claude Plans">&#x1F4CB;</span>
+      <span class="menu-bar-icon">&#x1F50B;</span>
+      <span class="menu-bar-time">Thu Mar 26 &nbsp;4:30 PM</span>
+    </div>
+
+    <!-- Dropdown -->
+    <div class="dropdown" style="top: 30px; right: 80px;">
+      <!-- Plan 1 -->
+      <div class="plan-item" style="background: rgba(59,130,246,0.7);">
+        <div class="plan-name" style="color:#fff;">swirling-wibbling-bear</div>
+        <div class="plan-meta">
+          <span class="plan-title" style="color:#e0e0e0;">Remove explanation_details from ResponseComplianceResult</span>
+          <span class="plan-time" style="color:#d0d0d0;">Today, 4:25 PM</span>
+        </div>
+      </div>
+
+      <!-- Plan 2 -->
+      <div class="plan-item">
+        <div class="plan-name">floating-frolicking-stonebraker</div>
+        <div class="plan-meta">
+          <span class="plan-title">Structured Output Routing for Bedrock-Incompatible Types</span>
+          <span class="plan-time">Mar 21, 2:32 PM</span>
+        </div>
+      </div>
+
+      <!-- Plan 3 -->
+      <div class="plan-item">
+        <div class="plan-name">fluttering-booping-hearth</div>
+        <div class="plan-meta">
+          <span class="plan-title">Extract shared create_model utilities into pydantic_utils</span>
+          <span class="plan-time">Mar 18, 8:35 PM</span>
+        </div>
+      </div>
+
+      <!-- Plan 4 -->
+      <div class="plan-item">
+        <div class="plan-name">fluttering-skipping-hummingbird</div>
+        <div class="plan-meta">
+          <span class="plan-title">Simplify Pydantic Models for Structured Generation</span>
+          <span class="plan-time">Mar 15, 1:22 PM</span>
+        </div>
+      </div>
+
+      <!-- Plan 5 -->
+      <div class="plan-item">
+        <div class="plan-name">idempotent-noodling-babbage</div>
+        <div class="plan-meta">
+          <span class="plan-title">Simplify JSON Schemas for Bedrock Structured Output</span>
+          <span class="plan-time">Mar 15, 12:09 PM</span>
+        </div>
+      </div>
+
+      <div class="separator"></div>
+
+      <!-- Configure -->
+      <div class="config-item">
+        <span class="config-icon">&#x2699;&#xFE0F;</span>
+        <span class="config-text">Configure...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- Annotations                                     -->
+<!-- ════════════════════════════════════════════════ -->
+<div style="width: 680px; margin: 0 auto 50px;">
+  <div class="annotation">
+    <div class="annotation-number">1</div>
+    <div class="annotation-text"><strong>Menu bar icon</strong> &mdash; a small clipboard icon sits in the macOS system tray area. Always visible.</div>
+  </div>
+  <div class="annotation">
+    <div class="annotation-number">2</div>
+    <div class="annotation-text"><strong>Plan name</strong> (bold, top line) &mdash; the filename without <code>.md</code>.</div>
+  </div>
+  <div class="annotation">
+    <div class="annotation-number">3</div>
+    <div class="annotation-text"><strong>Title</strong> (grey, second line left) &mdash; extracted from the first <code># ...</code> heading in the file, with "Plan:" prefix stripped.</div>
+  </div>
+  <div class="annotation">
+    <div class="annotation-number">4</div>
+    <div class="annotation-text"><strong>Last modified</strong> (right-aligned) &mdash; human-friendly relative time. "Today" / "Yesterday" / date.</div>
+  </div>
+  <div class="annotation">
+    <div class="annotation-number">5</div>
+    <div class="annotation-text"><strong>Click action</strong> &mdash; clicking any plan row opens the <code>.md</code> file in the configured editor (default: VS Code).</div>
+  </div>
+  <div class="annotation">
+    <div class="annotation-number">6</div>
+    <div class="annotation-text"><strong>Configure...</strong> &mdash; opens a settings dialog (see below).</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- SCREEN 2: Configure dialog                      -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="mockup-section">
+  <div class="section-title">Screen 2 &mdash; Configure Dialog</div>
+  <div class="section-subtitle">Opened by clicking "Configure..." at the bottom of the dropdown</div>
+
+  <div class="mockup-frame" style="position:relative; width:400px; height:220px;">
+    <div class="config-dialog" style="position:relative; top:0; left:0; transform:none;">
+      <h3>Claude Plans Settings</h3>
+      <div class="config-row">
+        <span class="config-label">Plans to show</span>
+        <input class="config-input" type="number" value="10" min="1" max="50">
+      </div>
+      <div class="config-row">
+        <span class="config-label">Editor</span>
+        <select class="config-select">
+          <option selected>VS Code</option>
+          <option>Zed</option>
+          <option>Sublime Text</option>
+          <option>TextEdit</option>
+          <option>Custom...</option>
+        </select>
+      </div>
+      <div class="config-buttons">
+        <button class="config-btn cancel">Cancel</button>
+        <button class="config-btn save">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- Behavior notes                                  -->
+<!-- ════════════════════════════════════════════════ -->
+<div style="width: 680px; margin: 0 auto 80px;">
+  <div class="section-title" style="text-align:left;">Behavior Notes</div>
+  <ul style="color:#a0a0b0; font-size:13px; line-height:2; padding-left:20px;">
+    <li>Menu refreshes plan list every time it's opened (re-scans <code>~/.claude/plans/*.md</code>).</li>
+    <li>Title extracted from first line matching <code># ...</code>; strips "Plan:" prefix if present.</li>
+    <li>Editor commands: <strong>VS Code</strong> &rarr; <code>code</code>, <strong>Zed</strong> &rarr; <code>zed</code>, <strong>Sublime</strong> &rarr; <code>subl</code>, <strong>Custom</strong> &rarr; user-provided command.</li>
+    <li>Settings stored in <code>~/.config/claude-plans-menu/config.json</code>.</li>
+    <li>Built as a native macOS status-bar app (Swift / rumps / py2app or similar).</li>
+  </ul>
+</div>
+
+</body>
+</html>
